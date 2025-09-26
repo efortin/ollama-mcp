@@ -94,10 +94,18 @@ get_latest_version() {
 download_binary() {
     local version="$1"
     local platform="$2"
-    local binary_name="${BINARY_NAME}-${version#v}-${platform}"
+    local os="${platform%-*}"
+    local arch="${platform#*-}"
+    
+    # Convert arch names to match release artifacts
+    if [[ "$arch" == "amd64" ]]; then
+        arch="x86_64"
+    fi
+    
+    local binary_name="${BINARY_NAME}-${version#v}-${os}-${arch}"
     
     # Add .exe extension for Windows
-    if [[ "$platform" == *"windows"* ]]; then
+    if [[ "$os" == "windows" ]]; then
         binary_name="${binary_name}.exe"
     fi
     
@@ -120,10 +128,18 @@ verify_checksum() {
     local version="$1"
     local platform="$2"
     local binary_file="$3"
-    local binary_name="${BINARY_NAME}-${version#v}-${platform}"
+    local os="${platform%-*}"
+    local arch="${platform#*-}"
+    
+    # Convert arch names to match release artifacts
+    if [[ "$arch" == "amd64" ]]; then
+        arch="x86_64"
+    fi
+    
+    local binary_name="${BINARY_NAME}-${version#v}-${os}-${arch}"
     
     # Add .exe extension for Windows
-    if [[ "$platform" == *"windows"* ]]; then
+    if [[ "$os" == "windows" ]]; then
         binary_name="${binary_name}.exe"
     fi
     

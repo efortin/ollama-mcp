@@ -26,17 +26,13 @@ builds:
       - -s -w -X mcp-hello/internal/version.Version={{.Version}} -X mcp-hello/internal/version.Commit={{.Commit}} -X mcp-hello/internal/version.Date={{.Date}}
 
 archives:
-  - format_overrides:
-      - goos: windows
-        format: zip
+  - format: binary
     name_template: >-
       {{ .Binary }}-{{ .Version }}-{{ .Os }}-
       {{- if eq .Arch "amd64" }}x86_64
       {{- else if eq .Arch "386" }}i386
       {{- else }}{{ .Arch }}{{ end }}
       {{- if .Arm }}v{{ .Arm }}{{ end }}
-    files:
-      - none*
 
 checksum:
   name_template: 'checksums.txt'
