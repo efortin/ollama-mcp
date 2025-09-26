@@ -1,0 +1,82 @@
+version: 2
+
+project_name: ollama-mcp
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: server
+    main: ./cmd/server
+    binary: ollama-mcp-server
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ignore:
+      - goos: windows
+        goarch: arm64
+    ldflags:
+      - -s -w -X mcp-hello/internal/version.Version={{.Version}} -X mcp-hello/internal/version.Commit={{.Commit}} -X mcp-hello/internal/version.Date={{.Date}}
+
+archives:
+  - format: binary
+    name_template: >-
+      {{ .Binary }}-{{ .Version }}-{{ .Os }}-
+      {{- if eq .Arch "amd64" }}x86_64
+      {{- else if eq .Arch "386" }}i386
+      {{- else }}{{ .Arch }}{{ end }}
+      {{- if .Arm }}v{{ .Arm }}{{ end }}
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - '^style:'
+      - '^refactor:'
+      - Merge pull request
+      - Merge branch
+  groups:
+    - title: 'Features'
+      regexp: '^feat'
+    - title: 'Bug Fixes'
+      regexp: '^fix'
+    - title: 'Performance Improvements'
+      regexp: '^perf'
+    - title: 'Other Changes'
+
+release:
+  github:
+    owner: efortin
+    name: ollama-mcp
+  draft: false
+  prerelease: auto
+  mode: append
+  header: |
+    ## Ollama MCP Server v{{ .Version }}
+    
+    Model Context Protocol server for Ollama integration.
+  footer: |
+    ## Installation
+    
+    Download the binary for your platform and make it executable (macOS/Linux):
+    ```bash
+    chmod +x ollama-mcp-server-*
+    ```
+    
+    See the [README](https://github.com/efortin/ollama-mcp) for detailed setup instructions.

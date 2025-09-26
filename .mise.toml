@@ -1,0 +1,40 @@
+[tools]
+go = "1.25"
+golangci-lint = "latest"
+goreleaser = "latest"
+
+[env]
+GO111MODULE = "on"
+
+[tasks]
+# Utility tasks
+clean = "rm -rf bin/"
+
+# Development tasks
+build = "mkdir -p bin && go build -o bin/server ./cmd/server"
+run = "go run ./cmd/server"
+test = "go test ./..."
+test-verbose = "go test -v ./..."
+lint = "golangci-lint run"
+
+# Cross-compilation tasks
+build-all = "mise run clean && mise run build-darwin-amd64 && mise run build-darwin-arm64 && mise run build-linux-amd64 && mise run build-linux-arm64"
+build-darwin-amd64 = "mkdir -p bin && GOOS=darwin GOARCH=amd64 go build -o bin/server-darwin-amd64 ./cmd/server"
+build-darwin-arm64 = "mkdir -p bin && GOOS=darwin GOARCH=arm64 go build -o bin/server-darwin-arm64 ./cmd/server"
+build-linux-amd64 = "mkdir -p bin && GOOS=linux GOARCH=amd64 go build -o bin/server-linux-amd64 ./cmd/server"
+build-linux-arm64 = "mkdir -p bin && GOOS=linux GOARCH=arm64 go build -o bin/server-linux-arm64 ./cmd/server"
+
+# Dependency management
+deps = "go mod tidy"
+update-deps = "go get -u ./..."
+
+# Setup task
+setup = "go mod tidy && go get -u ./..."
+
+# CI/CD tasks
+test-ci = "act --container-architecture linux/amd64"
+
+# Release tasks
+release-snapshot = "goreleaser release --snapshot --clean --skip=publish"
+release-check = "goreleaser check"
+release-test = "goreleaser release --skip=publish --clean"

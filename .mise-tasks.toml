@@ -1,0 +1,21 @@
+[tasks]
+# Development tasks
+build = "go build -o bin/server ./cmd/server"
+run = "go run ./cmd/server"
+test = "go test ./..."
+test-verbose = "go test -v ./..."
+lint = "golangci-lint run"
+
+# Cross-compilation tasks
+build-all = "task build-darwin-amd64 build-darwin-arm64 build-linux-amd64 build-linux-arm64"
+build-darwin-amd64 = "GOOS=darwin GOARCH=amd64 go build -o bin/server-darwin-amd64 ./cmd/server"
+build-darwin-arm64 = "GOOS=darwin GOARCH=arm64 go build -o bin/server-darwin-arm64 ./cmd/server"
+build-linux-amd64 = "GOOS=linux GOARCH=amd64 go build -o bin/server-linux-amd64 ./cmd/server"
+build-linux-arm64 = "GOOS=linux GOARCH=arm64 go build -o bin/server-linux-arm64 ./cmd/server"
+
+# Dependency management
+deps = "go mod tidy"
+update-deps = "go get -u ./..."
+
+# Setup task
+setup = "go mod tidy && go get -u ./..."
