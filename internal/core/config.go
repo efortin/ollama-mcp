@@ -72,47 +72,41 @@ func (c *Config) GetModel(toolName string) string {
 	}
 }
 
-// Global config instance (loaded once at startup)
-var globalConfig *Config
-
-// InitConfig initializes the global configuration
-func InitConfig() error {
-	config, err := LoadConfig()
-	if err != nil {
-		return err
-	}
-	globalConfig = config
-	return nil
+// Server holds the MCP server instance with its configuration
+type Server struct {
+	config *Config
 }
 
-// GetConfig returns the global configuration
-func GetConfig() *Config {
-	if globalConfig == nil {
-		// Fallback: create config on demand if not initialized
-		config, _ := LoadConfig()
-		globalConfig = config
+// NewServer creates a new server instance with the given configuration
+func NewServer(config *Config) *Server {
+	return &Server{
+		config: config,
 	}
-	return globalConfig
+}
+
+// GetConfig returns the server's configuration
+func (s *Server) GetConfig() *Config {
+	return s.config
 }
 
 // GetClient returns the Ollama client
-func GetClient() *api.Client {
-	return GetConfig().Client
+func (s *Server) GetClient() *api.Client {
+	return s.config.Client
 }
 
 // GetDefaultModel returns the default model for a tool
-func GetDefaultModel(toolName string) string {
-	return GetConfig().GetModel(toolName)
+func (s *Server) GetDefaultModel(toolName string) string {
+	return s.config.GetModel(toolName)
 }
 
 // GetDefaultContextSize returns the default context size
-func GetDefaultContextSize() int {
-	return GetConfig().ContextSize
+func (s *Server) GetDefaultContextSize() int {
+	return s.config.ContextSize
 }
 
 // GetDefaultKeepAlive returns the default keep-alive duration
-func GetDefaultKeepAlive() string {
-	return GetConfig().KeepAlive
+func (s *Server) GetDefaultKeepAlive() string {
+	return s.config.KeepAlive
 }
 
 // Helper functions

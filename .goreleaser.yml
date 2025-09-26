@@ -23,7 +23,7 @@ builds:
       - goos: windows
         goarch: arm64
     ldflags:
-      - -s -w -X mcp-hello/internal/version.Version={{.Version}} -X mcp-hello/internal/version.Commit={{.Commit}} -X mcp-hello/internal/version.Date={{.Date}}
+      - -s -w -X github.com/efortin/ollama-mcp/internal/version.Version={{.Version}} -X github.com/efortin/ollama-mcp/internal/version.Commit={{.Commit}} -X github.com/efortin/ollama-mcp/internal/version.Date={{.Date}}
 
 archives:
   - format: binary
