@@ -4,7 +4,7 @@ import (
 	"os"
 	"testing"
 
-	"mcp-hello/internal/core"
+	"github.com/efortin/ollama-mcp/internal/core"
 )
 
 func TestLoadConfig(t *testing.T) {
@@ -102,26 +102,35 @@ func TestLoadConfig_WithEnvVars(t *testing.T) {
 	}
 }
 
-func TestGetConfig(t *testing.T) {
-	// Initialize config
-	err := core.InitConfig()
+func TestServerConfig(t *testing.T) {
+	// Load config
+	config, err := core.LoadConfig()
 	if err != nil {
-		t.Fatalf("InitConfig() error = %v", err)
+		t.Fatalf("LoadConfig() error = %v", err)
+	}
+
+	// Create server
+	server := core.NewServer(config)
+	if server == nil {
+		t.Error("NewServer() returned nil")
 	}
 
 	// Get config should return non-nil
-	config := core.GetConfig()
-	if config == nil {
+	serverConfig := server.GetConfig()
+	if serverConfig == nil {
 		t.Error("GetConfig() returned nil")
 	}
 }
 
-func TestGetDefaultModel(t *testing.T) {
-	// Initialize config
-	err := core.InitConfig()
+func TestServerGetDefaultModel(t *testing.T) {
+	// Load config
+	config, err := core.LoadConfig()
 	if err != nil {
-		t.Fatalf("InitConfig() error = %v", err)
+		t.Fatalf("LoadConfig() error = %v", err)
 	}
+
+	// Create server
+	server := core.NewServer(config)
 
 	tests := []struct {
 		name     string
@@ -136,7 +145,7 @@ func TestGetDefaultModel(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			model := core.GetDefaultModel(tt.toolName)
+			model := server.GetDefaultModel(tt.toolName)
 			if model != tt.want {
 				t.Errorf("GetDefaultModel(%v) = %v, want %v", tt.toolName, model, tt.want)
 			}
@@ -144,27 +153,33 @@ func TestGetDefaultModel(t *testing.T) {
 	}
 }
 
-func TestGetDefaultContextSize(t *testing.T) {
-	// Initialize config
-	err := core.InitConfig()
+func TestServerGetDefaultContextSize(t *testing.T) {
+	// Load config
+	config, err := core.LoadConfig()
 	if err != nil {
-		t.Fatalf("InitConfig() error = %v", err)
+		t.Fatalf("LoadConfig() error = %v", err)
 	}
 
-	contextSize := core.GetDefaultContextSize()
+	// Create server
+	server := core.NewServer(config)
+
+	contextSize := server.GetDefaultContextSize()
 	if contextSize != core.DefaultContextSize {
 		t.Errorf("GetDefaultContextSize() = %v, want %v", contextSize, core.DefaultContextSize)
 	}
 }
 
-func TestGetDefaultKeepAlive(t *testing.T) {
-	// Initialize config
-	err := core.InitConfig()
+func TestServerGetDefaultKeepAlive(t *testing.T) {
+	// Load config
+	config, err := core.LoadConfig()
 	if err != nil {
-		t.Fatalf("InitConfig() error = %v", err)
+		t.Fatalf("LoadConfig() error = %v", err)
 	}
 
-	keepAlive := core.GetDefaultKeepAlive()
+	// Create server
+	server := core.NewServer(config)
+
+	keepAlive := server.GetDefaultKeepAlive()
 	if keepAlive != core.DefaultKeepAlive {
 		t.Errorf("GetDefaultKeepAlive() = %v, want %v", keepAlive, core.DefaultKeepAlive)
 	}

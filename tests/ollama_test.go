@@ -5,7 +5,7 @@ import (
 	"os"
 	"testing"
 
-	"mcp-hello/internal/core"
+	"github.com/efortin/ollama-mcp/internal/core"
 )
 
 func TestListModels(t *testing.T) {
@@ -17,8 +17,17 @@ func TestListModels(t *testing.T) {
 	// Create a context
 	ctx := context.Background()
 
+	// Load config and create handler
+	config, err := core.LoadConfig()
+	if err != nil {
+		t.Fatalf("Failed to load config: %v", err)
+	}
+	server := core.NewServer(config)
+	factory := core.NewHandlerFactory(server)
+	listModelsHandler := factory.ListModelsHandler()
+
 	// Call the ListModels function
-	_, output, err := core.ListModels(ctx, nil, core.ListModelsInput{})
+	_, output, err := listModelsHandler(ctx, nil, core.ListModelsInput{})
 	if err != nil {
 		t.Fatalf("ListModels returned an error: %v", err)
 	}
@@ -45,8 +54,17 @@ func TestModelInfo(t *testing.T) {
 	// Create a context
 	ctx := context.Background()
 
+	// Load config and create handler
+	config, err := core.LoadConfig()
+	if err != nil {
+		t.Fatalf("Failed to load config: %v", err)
+	}
+	server := core.NewServer(config)
+	factory := core.NewHandlerFactory(server)
+	modelInfoHandler := factory.ModelInfoHandler()
+
 	// Call the ModelInfo function
-	_, output, err := core.ModelInfo(ctx, nil, core.ModelInfoInput{Name: modelName})
+	_, output, err := modelInfoHandler(ctx, nil, core.ModelInfoInput{Name: modelName})
 	if err != nil {
 		t.Fatalf("ModelInfo returned an error: %v", err)
 	}
@@ -73,8 +91,17 @@ func TestPullModel(t *testing.T) {
 	// Create a context
 	ctx := context.Background()
 
+	// Load config and create handler
+	config, err := core.LoadConfig()
+	if err != nil {
+		t.Fatalf("Failed to load config: %v", err)
+	}
+	server := core.NewServer(config)
+	factory := core.NewHandlerFactory(server)
+	pullModelHandler := factory.PullModelHandler()
+
 	// Call the PullModel function with no progress to make the test faster
-	_, output, err := core.PullModel(ctx, nil, core.PullModelInput{
+	_, output, err := pullModelHandler(ctx, nil, core.PullModelInput{
 		Name:       modelName,
 		NoProgress: true,
 	})
@@ -102,8 +129,17 @@ func TestOllamaChatCalculation(t *testing.T) {
 	// Create a context
 	ctx := context.Background()
 
+	// Load config and create handler
+	config, err := core.LoadConfig()
+	if err != nil {
+		t.Fatalf("Failed to load config: %v", err)
+	}
+	server := core.NewServer(config)
+	factory := core.NewHandlerFactory(server)
+	chatHandler := factory.ChatHandler()
+
 	// Call the ChatWithOllama function
-	_, output, err := core.ChatWithOllama(ctx, nil, core.ChatInput{
+	_, output, err := chatHandler(ctx, nil, core.ChatInput{
 		Model:   modelName,
 		Message: "Calculate 1+1 and give me the result.",
 	})

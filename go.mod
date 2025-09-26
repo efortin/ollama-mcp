@@ -1,4 +1,4 @@
-module mcp-hello
+module github.com/efortin/ollama-mcp
 
 go 1.25
 
