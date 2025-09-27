@@ -3,7 +3,7 @@ module github.com/efortin/ollama-mcp
 go 1.25
 
 require (
-	github.com/modelcontextprotocol/go-sdk v0.7.0
+	github.com/modelcontextprotocol/go-sdk v0.8.0
 	github.com/ollama/ollama v0.12.3
 )
 
