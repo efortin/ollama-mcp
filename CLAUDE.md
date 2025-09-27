@@ -23,11 +23,21 @@ This project uses [mise](https://mise.jdx.dev/) for task management. All develop
 - Individual platform builds: `build-darwin-amd64`, `build-darwin-arm64`, `build-linux-amd64`, `build-linux-arm64`
 
 ### Testing Individual Components
-To test specific packages:
+The project uses **Ginkgo BDD testing framework**. To test specific packages:
 ```bash
-go test ./tests/chat_test.go -v
-go test ./tests/config_test.go -v
-go test ./tests/ollama_test.go -v
+# Run tests for specific packages
+go test ./internal/core -v          # Core functionality tests
+go test ./internal/version -v       # Version tests
+go test ./cmd/server -v             # Main server tests
+
+# Run tests with coverage
+go test ./... -cover
+
+# Generate detailed coverage report
+go test ./... -coverprofile=coverage.out && go tool cover -func=coverage.out
+
+# Run legacy integration tests
+go test ./tests -v
 ```
 
 ## Architecture Overview
@@ -87,9 +97,59 @@ The server respects standard Ollama environment variables:
 
 ## Testing Strategy
 
-Tests are organized by functionality:
-- `tests/chat_test.go` - Chat functionality tests
-- `tests/config_test.go` - Configuration system tests
-- `tests/ollama_test.go` - Ollama integration tests
+The project uses **Ginkgo BDD testing framework** with **Gomega matchers** for readable, well-organized tests:
+
+### Test Structure
+- **Core functionality**: `internal/core/*_test.go` - BDD tests for handlers, configuration, and validation
+- **Version module**: `internal/version/*_test.go` - Version string formatting tests
+- **Main server**: `cmd/server/*_test.go` - Integration tests for CLI and main components
+- **Legacy tests**: `tests/*.go` - Legacy integration tests (maintained for compatibility)
+
+### Test Organization Pattern
+Tests follow Ginkgo's hierarchical structure:
+```go
+Describe("ComponentName", func() {
+    Context("when condition", func() {
+        It("should behavior", func() {
+            // Test implementation with Gomega matchers
+        })
+    })
+})
+```
+
+### Coverage Goals
+- **Current coverage: 30.4%** overall
+- `internal/version`: **100%** coverage
+- `internal/core`: **33.8%** coverage
+- Focus on validation functions and configuration logic
 
 Always run `mise run test` to execute the full test suite before making changes.
+
+## Project Structure
+
+The codebase follows Go standard project layout with these key differences from the README:
+
+```
+ollama-mcp/
+├── cmd/server/                 # Application entrypoint
+│   ├── main.go                # CLI parsing and MCP server setup
+│   ├── main_test.go           # Ginkgo tests for main functionality
+│   └── main_suite_test.go     # Ginkgo test suite
+├── internal/core/             # Core business logic (private)
+│   ├── config.go              # Environment configuration and HTTP client
+│   ├── handlers.go            # MCP tool handlers with dependency injection
+│   ├── chat.go                # Chat input/output types
+│   ├── code.go                # Code input/output types
+│   ├── models.go              # Model listing types
+│   ├── pull.go                # Model pulling types
+│   ├── *_test.go              # Ginkgo BDD tests
+│   └── core_suite_test.go     # Ginkgo test suite
+├── internal/version/          # Version information module
+│   ├── version.go             # Version string formatting
+│   ├── version_test.go        # Ginkgo tests
+│   └── version_suite_test.go  # Ginkgo test suite
+└── tests/                     # Legacy integration tests
+    └── *.go                   # Original test files (maintained for compatibility)
+```
+
+**Note**: The README's project structure is outdated. The actual implementation separates types into individual files (chat.go, code.go, models.go, pull.go) rather than having combined functionality files.
