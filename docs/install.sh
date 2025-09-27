@@ -97,12 +97,8 @@ download_binary() {
     local os="${platform%-*}"
     local arch="${platform#*-}"
     
-    # Convert arch names to match release artifacts
-    if [[ "$arch" == "amd64" ]]; then
-        arch="x86_64"
-    fi
-    
-    local binary_name="${BINARY_NAME}-${version#v}-${os}-${arch}"
+    # New binary naming: ollama-mcp-linux-amd64, ollama-mcp-darwin-arm64, etc.
+    local binary_name="ollama-mcp-${os}-${arch}"
     
     # Add .exe extension for Windows
     if [[ "$os" == "windows" ]]; then
@@ -131,12 +127,8 @@ verify_checksum() {
     local os="${platform%-*}"
     local arch="${platform#*-}"
     
-    # Convert arch names to match release artifacts
-    if [[ "$arch" == "amd64" ]]; then
-        arch="x86_64"
-    fi
-    
-    local binary_name="${BINARY_NAME}-${version#v}-${os}-${arch}"
+    # New binary naming: ollama-mcp-linux-amd64, ollama-mcp-darwin-arm64, etc.
+    local binary_name="ollama-mcp-${os}-${arch}"
     
     # Add .exe extension for Windows
     if [[ "$os" == "windows" ]]; then

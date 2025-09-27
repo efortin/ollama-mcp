@@ -58,7 +58,7 @@ function Get-Architecture {
     $arch = $env:PROCESSOR_ARCHITECTURE
     
     switch ($arch) {
-        "AMD64" { return "x86_64" }
+        "AMD64" { return "amd64" }
         "ARM64" { return "arm64" }
         default { Write-Error "Unsupported architecture: $arch" }
     }
@@ -71,7 +71,8 @@ function Download-Binary {
         [string]$Architecture
     )
     
-    $binaryName = "$BINARY_NAME-$($Version.TrimStart('v'))-windows-$Architecture.exe"
+    # New binary naming: ollama-mcp-windows-amd64.exe, etc.
+    $binaryName = "ollama-mcp-windows-$Architecture.exe"
     $downloadUrl = "https://github.com/$REPO/releases/download/$Version/$binaryName"
     $tempFile = Join-Path $env:TEMP "$BINARY_NAME-download.exe"
     
@@ -96,7 +97,8 @@ function Verify-Checksum {
     
     Write-Info "Verifying checksum..."
     
-    $binaryName = "$BINARY_NAME-$($Version.TrimStart('v'))-windows-$Architecture.exe"
+    # New binary naming: ollama-mcp-windows-amd64.exe, etc.
+    $binaryName = "ollama-mcp-windows-$Architecture.exe"
     $checksumsUrl = "https://github.com/$REPO/releases/download/$Version/checksums.txt"
     $tempChecksums = Join-Path $env:TEMP "ollama-mcp-checksums.txt"
     
