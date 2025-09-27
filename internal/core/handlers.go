@@ -22,6 +22,21 @@ func NewHandlerFactory(server *Server) *HandlerFactory {
 	}
 }
 
+// GetServer returns the server instance
+func (h *HandlerFactory) GetServer() *Server {
+	return h.server
+}
+
+// ValidateModelName validates a model name (exposed for testing)
+func (h *HandlerFactory) ValidateModelName(model string) error {
+	return h.validateModelName(model)
+}
+
+// ValidateChatInput validates chat input (exposed for testing)
+func (h *HandlerFactory) ValidateChatInput(input ChatInput) error {
+	return h.validateChatInput(input)
+}
+
 // ChatHandler returns a handler function for the chat tool
 func (h *HandlerFactory) ChatHandler() func(context.Context, *mcp.CallToolRequest, ChatInput) (*mcp.CallToolResult, ChatOutput, error) {
 	return func(ctx context.Context, req *mcp.CallToolRequest, input ChatInput) (*mcp.CallToolResult, ChatOutput, error) {
