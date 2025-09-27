@@ -1,16 +1,13 @@
 {
   "mcpServers": {
-    "ollama-mcp": {
-      "command": "go",
-      "args": ["run", "./cmd/server/main.go"],
-      "env": {
-        "OLLAMA_HOST": "https://ollama.empyr.cloud",
-        "OLLAMA_CONTEXT_SIZE": "32000",
-        "OLLAMA_CODE_MODEL": "qwen3-code:30b",
-        "OLLAMA_CHAT_MODEL": "gpt-oss:20b"
-      },
-      "disabled": false,
-      "autoApprove": []
+    "ollama": {
+      "command": "~/.local/bin/ollama-mcp-server",
+      "args": [
+        "--host", "https://<your_ollama_host>",
+        "--context-size", "8192",
+        "--code-model", "qwen3-code:30b",
+        "--chat-model", "gpt-oss:20b"
+      ]
     }
   }
 }

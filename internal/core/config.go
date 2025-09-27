@@ -60,6 +60,49 @@ func LoadConfig() (*Config, error) {
 	}, nil
 }
 
+// LoadConfigFromFlags creates a new configuration from command-line flags
+func LoadConfigFromFlags(host string, contextSize int, codeModel, chatModel, keepAlive string) (*Config, error) {
+	var client *api.Client
+	var err error
+
+	if host != "" {
+		// Parse the provided host URL
+		baseURL, err := url.Parse(host)
+		if err != nil {
+			return nil, err
+		}
+		client = api.NewClient(baseURL, createHTTPClient())
+	} else {
+		// Fall back to environment-based client if no host is provided
+		client, err = api.ClientFromEnvironment()
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	// Use provided values or defaults
+	if contextSize <= 0 {
+		contextSize = DefaultContextSize
+	}
+	if codeModel == "" {
+		codeModel = DefaultCodeModel
+	}
+	if chatModel == "" {
+		chatModel = DefaultChatModel
+	}
+	if keepAlive == "" {
+		keepAlive = DefaultKeepAlive
+	}
+
+	return &Config{
+		Client:      client,
+		ContextSize: contextSize,
+		CodeModel:   codeModel,
+		ChatModel:   chatModel,
+		KeepAlive:   keepAlive,
+	}, nil
+}
+
 // GetModel returns the model for the specified tool
 func (c *Config) GetModel(toolName string) string {
 	switch toolName {

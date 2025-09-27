@@ -4,6 +4,8 @@ build = "go build -o bin/server ./cmd/server"
 run = "go run ./cmd/server"
 test = "go test ./..."
 test-verbose = "go test -v ./..."
+test-binary = "go test -v ./tests -run TestBinary"
+test-integration = "task build && task test-binary"
 lint = "golangci-lint run"
 
 # Cross-compilation tasks
