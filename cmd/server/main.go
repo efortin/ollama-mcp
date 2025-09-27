@@ -16,6 +16,11 @@ import (
 func main() {
 	// Parse command line flags
 	versionFlag := flag.Bool("version", false, "Print version information")
+	hostFlag := flag.String("host", "", "Ollama host URL (e.g., https://ollama.empyr.cloud)")
+	contextSizeFlag := flag.Int("context-size", core.DefaultContextSize, "Context size for models")
+	codeModelFlag := flag.String("code-model", core.DefaultCodeModel, "Model to use for code generation")
+	chatModelFlag := flag.String("chat-model", core.DefaultChatModel, "Model to use for chat")
+	keepAliveFlag := flag.String("keep-alive", core.DefaultKeepAlive, "Keep-alive duration for models")
 	flag.Parse()
 
 	// Handle version flag
@@ -24,8 +29,8 @@ func main() {
 		os.Exit(0)
 	}
 
-	// Load configuration
-	config, err := core.LoadConfig()
+	// Load configuration with command-line arguments
+	config, err := core.LoadConfigFromFlags(*hostFlag, *contextSizeFlag, *codeModelFlag, *chatModelFlag, *keepAliveFlag)
 	if err != nil {
 		log.Fatalf("Failed to load configuration: %v", err)
 	}
